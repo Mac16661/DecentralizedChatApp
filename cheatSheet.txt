@@ -1,0 +1,111 @@
+ const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [chat, setChat] = useState([]);
+  const [pair, setPair] = useState({});
+
+  const user = gun.user().recall({ sessionStorage: true });
+
+  //fetching data from gun initilly
+  useEffect(() => {
+    gun.get("messages").open((data) => {
+      const messages = Object.values(data).filter((item) => !!item);
+      setChat(messages);
+    });
+    return () => {
+      gun.get("messages").off();
+    };
+  }, []);
+
+  //TODO: Login functionality
+  const handleLogin = (e) => {
+    e.preventDefault();
+    user.auth(email, password, (ack) => {
+      console.log(ack.sea);
+      setPair(ack.sea);
+    });
+    //TODO: need to add user name and user profile pic intitally
+  };
+
+  //TODO: Logout
+  const handleLogOut = (e) => {
+    e.preventDefault();
+    user.leave();
+    if (user.is) {
+      console.log("unsuccessful");
+    } else {
+      console.log("Logged out successfully");
+    }
+  };
+
+  //TODO: Signin functionality with SEA
+  const handleSignup = (e) => {
+    user.create(email, password, (ack) => {
+      console.log(ack);
+    });
+    e.preventDefault();
+  };
+
+  //TODO: Posting data into the gun db
+  const handlePost = async (e) => {
+    e.preventDefault();
+
+    // var data = await SEA.sign(message, pair);
+    // gun.get("messages").set({
+    //   title: data,
+    //   key: pair.pub,
+    // });
+
+    gun.get("messages").set({
+      title: message,
+    });
+    setMessage("");
+  };
+
+<div className="Login">
+        <form>
+          <input
+            type="text"
+            placeholder="email"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            required
+          />
+          <input
+            type="password"
+            placeholder="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            required
+          />
+          <button onClick={handleLogin}>Login</button>
+          <button onClick={handleSignup}>Sign up</button>
+          <button onClick={handleLogOut}>LogOut</button>
+        </form>
+      </div>
+      <div className="Chat">
+        <div className="inputMSG">
+          <input
+            type="text"
+            placeholder="enter message here"
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+          />
+          <button onClick={handlePost}>post</button>
+        </div>
+        <div className="showMSG">
+          {chat.map((data, id) => {
+            return <p key={id}>{data.title}</p>;
+          })}
+        </div>
+      </div>
+
+
+
+let last
+gun.get('some node').get('something').on(data => {
+    if(data === last) return
+    console.log(data)
+    last = data
+})
